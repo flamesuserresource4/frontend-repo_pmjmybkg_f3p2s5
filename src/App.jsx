@@ -1,28 +1,50 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react';
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import Chat from './components/Chat';
+import Forum from './components/Forum';
 
-function App() {
-  const [count, setCount] = useState(0)
+const appText = {
+  en: {
+    description: 'Black-themed, fast, and responsive community space with voice chat.',
+  },
+  ru: {
+    description: 'Черная тема, быстрый и отзывчивый форум с голосовым чатом.',
+  },
+};
+
+export default function App() {
+  const [lang, setLang] = useState('ru');
+  const [animate, setAnimate] = useState(true);
+
+  const description = useMemo(() => appText[lang].description, [lang]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
+    <div className="min-h-screen bg-neutral-950 text-white selection:bg-green-400/30">
+      <div className="fixed inset-0 pointer-events-none" aria-hidden>
+        <div className="absolute -inset-20 blur-3xl opacity-20 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-green-500 via-blue-500 to-transparent" />
       </div>
-    </div>
-  )
-}
 
-export default App
+      <Header lang={lang} setLang={setLang} animate={animate} setAnimate={setAnimate} />
+
+      <main className="mx-auto max-w-7xl px-4 py-6">
+        <p className="mb-4 text-sm text-neutral-400">{description}</p>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 min-h-[70vh]">
+          <div className="lg:col-span-1 rounded-xl border border-white/10 bg-neutral-900/40">
+            <Sidebar lang={lang} />
+          </div>
+          <div className="lg:col-span-2 rounded-xl border border-white/10 bg-neutral-900/40 overflow-hidden">
+            <Chat lang={lang} animate={animate} />
+          </div>
+          <div className="lg:col-span-1 rounded-xl border border-white/10 bg-neutral-900/40 overflow-hidden">
+            <Forum lang={lang} />
+          </div>
+        </div>
+      </main>
+
+      <footer className="mx-auto max-w-7xl px-4 pb-8 text-center text-xs text-neutral-500">
+        © {new Date().getFullYear()} LandJav
+      </footer>
+    </div>
+  );
+}
