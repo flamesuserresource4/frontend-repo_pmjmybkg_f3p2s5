@@ -3,19 +3,23 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Chat from './components/Chat';
 import Forum from './components/Forum';
+import AuthPanel from './components/AuthPanel';
 
 const appText = {
   en: {
     description: 'Black-themed, fast, and responsive community space with voice chat.',
+    authTitle: 'Your account',
   },
   ru: {
     description: 'Черная тема, быстрый и отзывчивый форум с голосовым чатом.',
+    authTitle: 'Ваш аккаунт',
   },
 };
 
 export default function App() {
   const [lang, setLang] = useState('ru');
   const [animate, setAnimate] = useState(true);
+  const [user, setUser] = useState(null);
 
   const description = useMemo(() => appText[lang].description, [lang]);
 
@@ -36,8 +40,21 @@ export default function App() {
           <div className="lg:col-span-2 rounded-xl border border-white/10 bg-neutral-900/40 overflow-hidden">
             <Chat lang={lang} animate={animate} />
           </div>
-          <div className="lg:col-span-1 rounded-xl border border-white/10 bg-neutral-900/40 overflow-hidden">
-            <Forum lang={lang} />
+          <div className="lg:col-span-1 space-y-4">
+            <div className="rounded-xl border border-white/10 bg-neutral-900/40 overflow-hidden">
+              <Forum lang={lang} />
+            </div>
+            <div className="rounded-xl border border-white/10 bg-neutral-900/40 p-4">
+              <h3 className="mb-2 text-sm font-medium text-neutral-200">{appText[lang].authTitle}</h3>
+              {user ? (
+                <div className="text-sm text-neutral-300">
+                  <div className="mb-1">{user.name}</div>
+                  <div className="text-xs text-neutral-500">{user.email || user.phone}</div>
+                </div>
+              ) : (
+                <AuthPanel lang={lang} animate={animate} onAuth={setUser} />)
+              }
+            </div>
           </div>
         </div>
       </main>
